@@ -29,39 +29,39 @@ else
     echo "You are root user"
 fi # fi means reverse of if, indicating condition end
 
-dnf module disable nodejs -y
+dnf module disable nodejs -y &>> $LOGFILE
 
-VALIDATE $? "Disabling current NodeJS" &>> $LOGFILE
+VALIDATE $? "Disabling current NodeJS"
 
-dnf module enable nodejs:18 -y
+dnf module enable nodejs:18 -y  &>> $LOGFILE
 
-VALIDATE $? "Enabling NodeJS:18" &>> $LOGFILE
+VALIDATE $? "Enabling NodeJS:18"
 
-dnf install nodejs -y
+dnf install nodejs -y  &>> $LOGFILE
 
-VALIDATE $? "Installing NodeJS:18" &>> $LOGFILE
+VALIDATE $? "Installing NodeJS:18"
 
 useradd roboshop
 
-VALIDATE $? "creating roboshop user" &>> $LOGFILE
+VALIDATE $? "creating roboshop user"
 
 mkdir /app
 
-VALIDATE $? "creating app directory" &>> $LOGFILE
+VALIDATE $? "creating app directory"
 
-curl -o /tmp/catalogue.zip https://roboshop-builds.s3.amazonaws.com/catalogue.zip
+curl -o /tmp/catalogue.zip https://roboshop-builds.s3.amazonaws.com/catalogue.zip  &>> $LOGFILE
 
-VALIDATE $? "Downloading catalogue application" &>> $LOGFILE
+VALIDATE $? "Downloading catalogue application"
 
 cd /app 
 
-unzip /tmp/catalogue.zip
+unzip /tmp/catalogue.zip  &>> $LOGFILE
 
-VALIDATE $? "unzipping catalogue" &>> $LOGFILE
+VALIDATE $? "unzipping catalogue"
 
-npm install 
+npm install  &>> $LOGFILE
 
-VALIDATE $? "Installing dependencies" &>> $LOGFILE
+VALIDATE $? "Installing dependencies"
 
 # use absolute, because catalogue.service exists there
 cp /home/centos/roboshop-shell/catalogue.service /etc/systemd/system/catalogue.service &>> $LOGFILE
@@ -70,7 +70,7 @@ VALIDATE $? "Copying catalogue service file"
 
 systemctl daemon-reload &>> $LOGFILE
 
-VALIDATE $? "catalogue daemon reload" &>> $LOGFILE
+VALIDATE $? "catalogue daemon reload"
 
 systemctl enable catalogue &>> $LOGFILE
 
@@ -84,11 +84,11 @@ cp /home/centos/roboshop-shell/mongo.repo /etc/yum.repos.d/mongo.repo
 
 VALIDATE $? "copying mongodb repo"
 
-dnf install mongodb-org-shell -y
+dnf install mongodb-org-shell -y &>> $LOGFILE
 
 VALIDATE $? "Installing MongoDB client"
 
-mongo --host $MONGDB_HOST </app/schema/catalogue.js
+mongo --host $MONGDB_HOST </app/schema/catalogue.js &>> $LOGFILE
 
 VALIDATE $? "Loading catalouge data into MongoDB"
 
