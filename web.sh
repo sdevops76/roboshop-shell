@@ -1,3 +1,5 @@
+#!/bin/bash
+
 ID=$(id -u)
 R="\e[31m"
 G="\e[32m"
@@ -28,38 +30,38 @@ else
     echo "You are root user"
 fi # fi means reverse of if, indicating condition end
 
-dnf install nginx -y
-
+dnf install nginx -y &>> $LOGFILE
+ 
 VALIDATE $? "Installing nginx"
 
-systemctl enable nginx
+systemctl enable nginx &>> $LOGFILE
 
-VALIDATE $? "Enable nginx"
+VALIDATE $? "Enable nginx" 
 
-systemctl start nginx
+systemctl start nginx &>> $LOGFILE
 
 VALIDATE $? "Starting Nginx"
 
-rm -rf /usr/share/nginx/html/*
+rm -rf /usr/share/nginx/html/* &>> $LOGFILE
 
 VALIDATE $? "removed default website"
 
-curl -o /tmp/web.zip https://roboshop-builds.s3.amazonaws.com/web.zip
+curl -o /tmp/web.zip https://roboshop-builds.s3.amazonaws.com/web.zip &>> $LOGFILE
 
 VALIDATE $? "Downloaded web application"
 
-cd /usr/share/nginx/html
+cd /usr/share/nginx/html &>> $LOGFILE
 
 VALIDATE $? "moving nginx html directory"
 
-unzip -o /tmp/web.zip
+unzip -o /tmp/web.zip &>> $LOGFILE
 
 VALIDATE $? "unzipping web"
-
-cp /home/centos/roboshop-shell/roboshop.conf /etc/nginx/default.d/roboshop.conf 
+ 
+cp /home/centos/roboshop-shell/roboshop.conf /etc/nginx/default.d/roboshop.conf &>> $LOGFILE 
 
 VALIDATE $? "copied roboshop reverse proxy config"
 
-systemctl restart nginx 
+systemctl restart nginx &>> $LOGFILE
 
 VALIDATE $? "restarted nginx"
